@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.revature.data.AddressRepository;
 import com.revature.data.UserRepository;
 import com.revature.exception.UserNotFoundException;
 import com.revature.model.User;
@@ -21,6 +22,9 @@ public class UserService {
 	
 	@Autowired
 	private UserRepository userRepo;
+
+	@Autowired
+	private AddressRepository addressRepo;
 	
 	@Transactional(readOnly=true) // make sure method fires against database in one unit
 	public Set<User> findAll() {
@@ -32,6 +36,12 @@ public class UserService {
 	 
 	@Transactional(propagation=Propagation.REQUIRES_NEW) // when method is invoked, it begins a *new* transaction (one unit of work)
 	public User add(User u) {
+		
+		// Check if user has an Address or Addresses
+		if (u.getAddresses() != null) {
+			u.getAddresses().forEach(address -> addressRepo.save(address));
+		}
+		
 		return userRepo.save(u);
 	}
 	

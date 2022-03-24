@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.Length;
@@ -16,7 +17,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.ToString;
 
 @Entity
 @Table(name="addresses")
@@ -24,6 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@EqualsAndHashCode(exclude={"owners"}) @ToString(exclude= {"owners"}) // prevents Hibernate from causing infinite loop
 public class Address {
 
 	@Id
@@ -41,6 +46,18 @@ public class Address {
 	private String zip;
 	
 	// one address can correspond to many people
-	private Set<User> owners;
+	@ManyToMany(mappedBy="addresses") // declare the owner of the relationship by mapping it to the property of the User class
+	private @NonNull Set<User> owners;
+
+	// constructor with no id and no owners
+	public Address(String street, String secondary, @Length(min = 2, max = 2) String state, String city, String zip) {
+		super();
+		this.street = street;
+		this.secondary = secondary;
+		this.state = state;
+		this.city = city;
+		this.zip = zip;
+	}
+	
 	
 }
