@@ -1,10 +1,5 @@
 package com.revature.errorhandling;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-@Data
-@EqualsAndHashCode(callSuper=false) 	// prevent an infinite loop that occurs in a bi-directional relationship
 public class ApiValidationError extends ApiSubError {
 
 	private String object; 			// name of the class of the object user tried to insert
@@ -31,5 +26,45 @@ public class ApiValidationError extends ApiSubError {
 		this(object, field, reason);
 		this.rejectedValue = rejectedValue;
 	}
+
+	public String getObject() {
+		return object;
+	}
+
+	public void setObject(String object) {
+		this.object = object;
+	}
+
+	public String getField() {
+		return field;
+	}
+
+	public void setField(String field) {
+		this.field = field;
+	}
+
+	public Object getRejectedValue() {
+		return rejectedValue;
+	}
+
+	public void setRejectedValue(Object rejectedValue) {
+		this.rejectedValue = rejectedValue;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	@Override
+	public String toString() {
+		return "ApiValidationError [object=" + object + ", field=" + field + ", rejectedValue=" + rejectedValue
+				+ ", reason=" + reason + "]";
+	}
+	
+	
 	
 }

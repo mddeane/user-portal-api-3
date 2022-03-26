@@ -17,9 +17,10 @@ import com.revature.model.Artwork;
 import com.revature.model.User;
 
 @Service
-public class UserService {
+public class ArtworkService {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
+
 	
 	@Autowired
 	private UserRepository userRepo;
@@ -27,21 +28,27 @@ public class UserService {
 	@Autowired
 	private ArtworkRepository artworkRepo;
 	
+	
 	@Transactional(readOnly=true) // make sure method fires against database in one unit
-	public Set<User> findAll() {
+	public Set<Artwork> findAll() {
 		
-		return userRepo.findAll().stream()
+		return artworkRepo.findAll().stream()
 				.collect(Collectors.toSet());
 	}
 	
 	 
 	@Transactional(propagation=Propagation.REQUIRES_NEW) // when method is invoked, it begins a *new* transaction (one unit of work)
-	public User add(User u) {
-		// Check if user has an Artwork or Artworks
-		if (u.getArtworks() != null) {
-			u.getArtworks().forEach(artwork -> artworkRepo.save(artwork));
+	public Artwork add(Artwork art, User u) { 
+		try {
+			if (u.getId() <= 0) {
+				return artworkRepo.save(art);
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+			log.warn("No user.");
 		}
-		return userRepo.save(u);
+		return art; // return empty art object if id not > 0
+		
 	}
 	
 	@Transactional(propagation=Propagation.REQUIRED) // default setting
@@ -64,4 +71,6 @@ public class UserService {
 			return userRepo.getById(id);
 		}
 	}
+
+
 }

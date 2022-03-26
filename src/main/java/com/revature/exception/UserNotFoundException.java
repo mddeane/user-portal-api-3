@@ -1,14 +1,16 @@
 package com.revature.exception;
 
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
 public class UserNotFoundException extends RuntimeException {
+	
+	public UserNotFoundException() {
+		super();
+	}
 	
 	// if user does not exist
 	public UserNotFoundException(String message) {
 		super(message);
 		
 	}
+	
 	
 }
